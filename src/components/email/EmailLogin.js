@@ -53,7 +53,6 @@ const EmailLogin = ({ setLoggedIn }) => {
         //   console.error('Auth token not found in response headers');
         // }
         setLoggedIn(true);
-        alert('Login successful!');
       } else {
         // Handle non-200 responses
         const errorText = await response.text(); // Read the response as text

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ag-grid-community/client-side-row-model": "^32.3.3",
     "ag-grid-react": "^33.0.4",
     "cra-template": "1.2.0",
     "react": "^19.0.0",

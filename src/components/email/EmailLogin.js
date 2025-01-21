@@ -42,16 +42,6 @@ const EmailLogin = ({ setLoggedIn }) => {
   
       // If the response is not JSON, try to handle it as text
       if (response.ok) {
-        // Extract the auth token from the Set-Cookie header
-        // const authToken = response.headers.get('set-cookie'); // This is where you'd look for the fetch-access-token cookie
-  
-        // if (authToken) {
-        //   console.log('Auth Token:', authToken);
-        //   // Optionally, save it to localStorage for future use (if required)
-        //   // localStorage.setItem('authToken', authToken);
-        // } else {
-        //   console.error('Auth token not found in response headers');
-        // }
         setLoggedIn(true);
       } else {
         // Handle non-200 responses

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react'; // Import AG Grid React
 import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community'; 
+import './Feed.css';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 const Feed = () => {
-  const [breedIds, setBreedIds] = useState([]); // To store the fetched dog breeds
-  const [dogBreeds, setDogBreeds] = useState([]); // To store the fetched dog breeds
+  const [breedIds, setBreedIds] = useState([]); // To store the fetched dog breed ids
+  const [dogBreeds, setDogBreeds] = useState([]); // To store the fetched dog breed info
   const [favorites, setFavorites] = useState([]); // To store favorite dog IDs
   const [match, setMatch] = useState(null); // To store the generated match
   const [matchId, setMatchId] = useState('');// To store the match id
@@ -52,6 +53,7 @@ const Feed = () => {
           throw new Error('Failed to fetch dog breeds');
         }
         const data = await response.json();
+        console.log("Data: ", data);
         setDogBreeds(data);
          // Map the fetched data to the desired format
       } catch (error) {
@@ -94,7 +96,7 @@ const Feed = () => {
     );
   };
 
-    // Generate a match using the favorited dog IDs
+  // Generate a match using the favorited dog IDs
   const generateMatch = async () => {
     try {
       const favoriteIds = favorites.map((dog) => dog.id); // Get IDs of favorites
@@ -121,13 +123,22 @@ const Feed = () => {
     }
   };
 
-  // Column definitions for AG Grid
+  // Column definitions for dog breeds
   const columnDefs = [
     { headerName: 'Name', field: 'name', sortable: true, filter: true },
+    { headerName: 'Image', 
+      field: 'img', 
+      cellRenderer: (params) => (
+        <img
+          src={params.value || 'https://via.placeholder.com/100'}
+          alt="Dog"
+          style={{ width: '70px', height: '70px', borderRadius: '8px' }}
+         />
+      ),
+    },
     { headerName: 'Breed', field: 'breed', sortable: true, filter: true },
     { headerName: 'Zip Code', field: 'zip_code', sortable: true, filter: true },
     { headerName: 'Age', field: 'age', sortable: true, filter: true },
-
     {
       headerName: 'Add to Favorites',
       field: 'add',
@@ -140,6 +151,16 @@ const Feed = () => {
     // Column definitions for the favorites table
     const favoritesColumnDefs = [
       { headerName: 'Name', field: 'name', sortable: true, filter: true },
+      { headerName: 'Image', 
+        field: 'img', 
+        cellRenderer: (params) => (
+          <img
+            src={params.value || 'https://via.placeholder.com/100'}
+            alt="Dog"
+            style={{ width: '70px', height: '70px', borderRadius: '8px' }}
+           />
+        ),
+      },
       { headerName: 'Breed', field: 'breed', sortable: true, filter: true },
       { headerName: 'Zip Code', field: 'zip_code', sortable: true, filter: true },
       { headerName: 'Age', field: 'age', sortable: true, filter: true },
@@ -170,50 +191,54 @@ const Feed = () => {
 
   return (
     <div>
-      <div style={{ height: 1000, width: 1000, margin: '0 auto' }}>
-        <h2>Dog Breeds</h2>
-        <AgGridReact
-          rowData={dogBreeds}
-          columnDefs={columnDefs}
-          defaultColDef={defaultColDef}
-          pagination={true}
-          paginationPageSize={20}
-        />
-      </div>
-
-      <div style={{ height: 1000, width: 1000, margin: '0 auto', marginTop: '20px' }}>
-        <h3>Favorites Table:</h3>
-        <AgGridReact
-          rowData={favorites}
-          columnDefs={favoritesColumnDefs}
-          defaultColDef={defaultColDef}
-          pagination={true}
-          paginationPageSize={10}
-        />
-        <button
-          onClick={generateMatch}
-          disabled={favorites.length === 0}
-          style={{
-            marginTop: '10px',
-            padding: '10px',
-            fontSize: '16px',
-            cursor: 'pointer',
-          }}
-        >
-          Generate Match
-        </button>
-      </div>
-
-      {match && (
-        <div style={{ paddingTop: '100px' }}>
-          <h3>Match Found!</h3>
-          <p><strong>Name:</strong> {match.name}</p>
-          <p><strong>Breed:</strong> {match.breed}</p>
-          <p><strong>Age:</strong> {match.age}</p>
-          <p><strong>Zip Code:</strong> {match.zip_code}</p>
-        </div>
-      )}
+    <div className="grid-container">
+      <h2>Dog Breeds</h2>
+      <AgGridReact
+        rowData={dogBreeds}
+        columnDefs={columnDefs}
+        defaultColDef={defaultColDef}
+        pagination={true}
+        paginationPageSize={20}
+      />
     </div>
+
+    <div className="grid-favorites-container">
+      <h2>Favorite Breeds</h2>
+      <AgGridReact
+        rowData={favorites}
+        columnDefs={favoritesColumnDefs}
+        defaultColDef={defaultColDef}
+        pagination={true}
+        paginationPageSize={20}
+      />
+      <button className="generate-button" onClick={generateMatch} disabled={favorites.length === 0}>
+        Generate Match
+      </button>
+    </div>
+
+    {match && (
+      <div className="match-container">
+        <h3>Match Found!</h3>
+        <p>
+          <strong>Name:</strong> {match.name}
+        </p>
+        <p>
+          <strong>Breed:</strong> {match.breed}
+        </p>
+        <p>
+          <strong>Age:</strong> {match.age}
+        </p>
+        <p>
+          <strong>Zip Code:</strong> {match.zip_code}
+        </p>
+        <img
+          src={match.img || 'https://via.placeholder.com/150'}
+          alt="Match"
+          style={{ width: '150px', height: '150px', borderRadius: '8px', marginTop: '10px' }}
+        />
+      </div>
+    )}
+  </div>
   );
 };
   
